@@ -1,6 +1,12 @@
-import { Component, ChangeDetectorRef, ViewChildren, AfterContentInit, AfterViewInit, QueryList } from '@angular/core';
+import { Component, ElementRef, ViewChild, 
+  AfterContentInit, AfterViewInit, Renderer2,
+ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 
 import { SimpleAlertViewComponent } from 'app/simple-alert-view/simple-alert-view.component';
+
+
+
+
 
 @Component({
   selector: 'app-root',
@@ -12,26 +18,30 @@ export class AppComponent implements AfterContentInit, AfterViewInit {
   public isAddTimerVisible:boolean = false;
   public time:number = 0;
   public timers: Array<number> = [];
+  public simpleAlert: ComponentRef<SimpleAlertViewComponent> = null;
 
-  @ViewChildren(SimpleAlertViewComponent) alerts: QueryList<SimpleAlertViewComponent>;
+
+  @ViewChild("timerInput") timeInput: ElementRef;
+  @ViewChild("alert", {read:ViewContainerRef}) alertContainer: ViewContainerRef;
 
 
-  constructor( private cdRef:ChangeDetectorRef) { 
+  constructor(private renderer:Renderer2,
+  private resolver: ComponentFactoryResolver) { 
     this.timers = [2, 9, 185];
   }
 
   ngAfterViewInit() {
-    this.alerts.forEach(item => {
-      if(!item.title){
-        item.title = "Johab";
-        item.message = "Aprende";
-      }
- 
-    });
-    this.cdRef.detectChanges();
+    console.log (this.timeInput);
+
+    this.renderer.setAttribute(this.timeInput.nativeElement,
+    "placeholder", "Enter seconds");
+
+    this.renderer.addClass(this.timeInput.nativeElement,
+      "time-in"); 
   }
   ngAfterContentInit() {
-    
+    const alertFactory = this.resolver.resolveComponentFactory(SimpleAlertViewComponent);
+    this.simpleAlert = this.alertContainer.createComponent(alertFactory);
   }
 
   logCountdownEnd() {
@@ -39,7 +49,13 @@ export class AppComponent implements AfterContentInit, AfterViewInit {
   }
 
   public showAddTimer(){
+
+    this.renderer.selectRootElement(this.timeInput.nativeElement).focus();
     this.isAddTimerVisible = true;
+    setTimeout(()=>{
+      this.timeInput.nativeElement.focus();
+    });
+    
   }
 
   public hideAddTimer(){
@@ -52,7 +68,7 @@ this.timers.push(this.time);
   }
 
   public showEndTimerAlert(){
-    this.alerts.first.show();
+    this.simpleAlert.instance.show();
   }
 
 
