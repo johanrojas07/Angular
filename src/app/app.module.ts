@@ -13,7 +13,6 @@ import { TabComponent } from './tab/tab.component';
 import { SimpleAlertViewComponent } from './simple-alert-view/simple-alert-view.component';
 
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +22,8 @@ import { SimpleAlertViewComponent } from './simple-alert-view/simple-alert-view.
     AlertViewComponent,
     TabsComponent,
     TabComponent,
-    SimpleAlertViewComponent
+    SimpleAlertViewComponent,
+
   ],
   imports: [
     BrowserModule,
