@@ -40,8 +40,7 @@ export class AppComponent implements AfterContentInit, AfterViewInit {
       "time-in"); 
   }
   ngAfterContentInit() {
-    const alertFactory = this.resolver.resolveComponentFactory(SimpleAlertViewComponent);
-    this.simpleAlert = this.alertContainer.createComponent(alertFactory);
+
   }
 
   logCountdownEnd() {
@@ -68,6 +67,14 @@ this.timers.push(this.time);
   }
 
   public showEndTimerAlert(){
+    const alertFactory = this.resolver.resolveComponentFactory(SimpleAlertViewComponent);
+    this.simpleAlert = this.alertContainer.createComponent(alertFactory);
+    this.simpleAlert.instance.title = "Fin -";
+    this.simpleAlert.instance.message = "Final";
+    this.simpleAlert.instance.onDismiss.subscribe(()=>{
+      this.simpleAlert.destroy();
+    });
+
     this.simpleAlert.instance.show();
   }
 
